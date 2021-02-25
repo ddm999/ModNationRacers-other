@@ -5,88 +5,22 @@ PPU-b97e933f40192f7aa819c81be9b5e106ad4c8866:
       "ModNation Racers":
         BCUS98167: [ 01.00 ]
     Author: ddm999
-  # v0.1: prints fmt_string only
-    Patch Version: 0.1
+    Patch Version: 1.0
     Patch:
-  # branch to unused function space
+  # branch to unused function space from removed development printf's
     - [ be32, 0x00986314, 0x48d353ce ] # ba     0xd353cc
     - [ be32, 0x004c2504, 0x48d353ce ] # ba     0xd353cc
     
-  # unused function space
+  # build stack frame in unused space
     - [ be32, 0x00d353cc, 0xF821FF41 ] # stdu   r1, -STACK_SIZE(r1)
     - [ be32, 0x00d353d0, 0x7C0802A6 ] # mflr   r0
     - [ be32, 0x00d353d4, 0xF80100D0 ] # std    r0, STACK_SIZE + 0x10(r1)
-  # save volatile regs
-    - [ be32, 0x00d353d8, 0xF86100B8 ] # std    r3, STACK_SIZE - 0x08(r1)
-    - [ be32, 0x00d353dc, 0xF88100B0 ] # std    r4, STACK_SIZE - 0x10(r1)
-    - [ be32, 0x00d353e0, 0xF8A100A8 ] # std    r5, STACK_SIZE - 0x18(r1)
-    - [ be32, 0x00d353e4, 0xF8C100A0 ] # std    r6, STACK_SIZE - 0x20(r1)
-    - [ be32, 0x00d353e8, 0xF8E10098 ] # std    r7, STACK_SIZE - 0x28(r1)
-    - [ be32, 0x00d353ec, 0xF9610090 ] # std    r11, STACK_SIZE - 0x30(r1)
-  # setup
-    - [ be32, 0x00d353f0, 0x3ce000ff ] # lis    r7,0xff
-    - [ be32, 0x00d353f4, 0x30e7ffff ] # subic  r7,r7,0x1
-    - [ be32, 0x00d353f8, 0x7c033800 ] # cmpw   r3,r7
-    - [ be32, 0x00d353fc, 0x40800050 ] # bge    CodeEnd       [if pointer is > 0xff0000, skip]
-    - [ be32, 0x00d35400, 0x3ce00000 ] # lis    r7,0x00
-    - [ be32, 0x00d35404, 0x7c033800 ] # cmpw   r3,r7
-    - [ be32, 0x00d35408, 0x40810044 ] # ble    CodeEnd       [if pointer is < 0x800 (ints), skip]
-    - [ be32, 0x00d3540c, 0x60640000 ] # mr     r4,r3
-    - [ be32, 0x00d35410, 0x38c00000 ] # li     r6,0          [write param]
-    - [ be32, 0x00d35414, 0x38a00001 ] # li     r5,1          [length param]
-    - [ be32, 0x00d35418, 0x39600193 ] # li     r11,0x193
-    - [ be32, 0x00d3541c, 0x60000000 ] # nop
-    - [ be32, 0x00d35420, 0x60000000 ] # nop
-    - [ be32, 0x00d35424, 0x60000000 ] # nop
-    - [ be32, 0x00d35428, 0x60000000 ] # nop
-    - [ be32, 0x00d3542c, 0x60000000 ] # nop
-    - [ be32, 0x00d35430, 0x60000000 ] # nop
-    - [ be32, 0x00d35434, 0x60000000 ] # nop
-    - [ be32, 0x00d35438, 0x60000000 ] # nop
-    - [ be32, 0x00d3543c, 0x60000000 ] # nop
-    - [ be32, 0x00d35440, 0x60000000 ] # nop
-    - [ be32, 0x00d35444, 0x60000000 ] # nop
-    - [ be32, 0x00d35448, 0x48d355c6 ] # ba     ContinueLoop
-  # loop split for space              # ContinueLoop:
-    - [ be32, 0x00d355c4, 0x88e40000 ] # lbz    r7,0(r4)      [get char under pointer]
-    - [ be32, 0x00d355c8, 0x2c070000 ] # cmpwi  r7,0
-    - [ be32, 0x00d355cc, 0x41820014 ] # beq    BreakLoop     [if char is '\0', break]
-    - [ be32, 0x00d355d0, 0x3860000f ] # li     r3,15         [channel param]
-    - [ be32, 0x00d355d4, 0x44000002 ] # sc     0             [sys_tty_write(15,r4,1,0)] 
-    - [ be32, 0x00d355d8, 0x38840001 ] # addi   r4,r4,1       [move pointer forwards]
-    - [ be32, 0x00d355dc, 0x48d355c6 ] # ba     ContinueLoop
-                                      # BreakLoop:
-    - [ be32, 0x00d355e0, 0x60000000 ] # nop
-    - [ be32, 0x00d355e4, 0x60000000 ] # nop
-    - [ be32, 0x00d355e8, 0x60000000 ] # nop
-    - [ be32, 0x00d355ec, 0x60000000 ] # nop
-    - [ be32, 0x00d355f0, 0x60000000 ] # nop
-    - [ be32, 0x00d355f4, 0x60000000 ] # nop
-    - [ be32, 0x00d355f8, 0x60000000 ] # nop
-    - [ be32, 0x00d355fc, 0x60000000 ] # nop
-    - [ be32, 0x00d35600, 0x60000000 ] # nop
-    - [ be32, 0x00d35604, 0x60000000 ] # nop
-    - [ be32, 0x00d35608, 0x60000000 ] # nop
-    - [ be32, 0x00d3560c, 0x60000000 ] # nop
-    - [ be32, 0x00d35610, 0x60000000 ] # nop
-    - [ be32, 0x00d35614, 0x60000000 ] # nop
-    - [ be32, 0x00d35618, 0x60000000 ] # nop
-    - [ be32, 0x00d3561c, 0x60000000 ] # nop
-    - [ be32, 0x00d35620, 0x3ce000d4 ] # lis    r4,0xd4
-    - [ be32, 0x00d35624, 0x30e7f5a7 ] # subic  r4,r4,0xa59  [move pointer to '\n']
-    - [ be32, 0x00d35628, 0x3860000f ] # li     r3,15         [channel param]
-    - [ be32, 0x00d3562c, 0x44000002 ] # sc     0             [sys_tty_write(15,*('\n'),1,0)]
-    - [ be32, 0x00d35630, 0x48d3544e ] # ba     CodeEnd
-  # restore volatile regs             # CodeEnd:
-    - [ be32, 0x00d3544c, 0xE86100B8 ] # ld     r3, STACK_SIZE - 0x08(r1)
-    - [ be32, 0x00d35450, 0xE88100B0 ] # ld     r4, STACK_SIZE - 0x10(r1)
-    - [ be32, 0x00d35454, 0xE8A100A8 ] # ld     r5, STACK_SIZE - 0x18(r1)
-    - [ be32, 0x00d35458, 0xE8C100A0 ] # ld     r6, STACK_SIZE - 0x20(r1)
-    - [ be32, 0x00d3545c, 0xE8E10098 ] # ld     r7, STACK_SIZE - 0x28(r1)
-    - [ be32, 0x00d35460, 0xE9610090 ] # ld     r11, STACK_SIZE - 0x30(r1)
+  # call printf
+    - [ be32, 0x00d354d8, 0x48946653 ] # bla    PTR_PRINTF
+    - [ be32, 0x00d354dc, 0x60000000 ] # nop
   # destroy stack frame
-    - [ be32, 0x00d35464, 0xE80100D0 ] # ld     r0, STACK_SIZE + 0x10(r1)
-    - [ be32, 0x00d35468, 0x7C0803A6 ] # mtlr   r0
-    - [ be32, 0x00d3546c, 0x382100C0 ] # addi   r1, r1, STACK_SIZE
+    - [ be32, 0x00d354e0, 0xE80100D0 ] # ld     r0, STACK_SIZE + 0x10(r1)
+    - [ be32, 0x00d354e4, 0x7C0803A6 ] # mtlr   r0
+    - [ be32, 0x00d354e8, 0x382100C0 ] # addi   r1, r1, STACK_SIZE
   # back to normal section
-    - [ be32, 0x00d35470, 0x4bc50ea8 ] # b      0x986318
+    - [ be32, 0x00d354ec, 0x4898631a ] # ba     0x986318

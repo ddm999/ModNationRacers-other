@@ -16,11 +16,11 @@ PPU-b97e933f40192f7aa819c81be9b5e106ad4c8866:
     - [ be32, 0x00d353d0, 0x7C0802A6 ] # mflr   r0
     - [ be32, 0x00d353d4, 0xF80100D0 ] # std    r0, STACK_SIZE + 0x10(r1)
   # call printf
-    - [ be32, 0x00d354d8, 0x48946653 ] # bla    PTR_PRINTF
-    - [ be32, 0x00d354dc, 0x60000000 ] # nop
+    - [ be32, 0x00d353d8, 0x48946653 ] # bla    PTR_PRINTF
+    - [ be32, 0x00d353dc, 0x60000000 ] # nop
   # destroy stack frame
-    - [ be32, 0x00d354e0, 0xE80100D0 ] # ld     r0, STACK_SIZE + 0x10(r1)
-    - [ be32, 0x00d354e4, 0x7C0803A6 ] # mtlr   r0
-    - [ be32, 0x00d354e8, 0x382100C0 ] # addi   r1, r1, STACK_SIZE
+    - [ be32, 0x00d353e0, 0xE80100D0 ] # ld     r0, STACK_SIZE + 0x10(r1)
+    - [ be32, 0x00d353e4, 0x7C0803A6 ] # mtlr   r0
+    - [ be32, 0x00d353e8, 0x382100C0 ] # addi   r1, r1, STACK_SIZE
   # back to normal section
-    - [ be32, 0x00d354ec, 0x4898631a ] # ba     0x986318
+    - [ be32, 0x00d353ec, 0x4898631a ] # ba     0x986318
